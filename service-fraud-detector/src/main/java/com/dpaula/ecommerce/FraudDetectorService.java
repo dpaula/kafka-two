@@ -2,9 +2,13 @@ package com.dpaula.ecommerce;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.math.BigDecimal;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class FraudDetectorService {
+
+    private final KafkaDispatcher<Order> orderDispatcher = new KafkaDispatcher<>();
 
     public static void main(String[] args) {
 
@@ -24,7 +28,7 @@ public class FraudDetectorService {
      * Corpo da execução da mensagem
      *
      */
-    private void parse(ConsumerRecord<String, Order> record) {
+    private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException {
         System.out.println("--------------------------------------------------");
         System.out.println("Processando novo pedido, verificando por fraude");
         System.out.println("Chave " + record.key());
@@ -37,6 +41,22 @@ public class FraudDetectorService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        final var order = record.value();
+
+        if(ehFraude(order)){
+            // caso o valor do pedido for maior ou igual a 4500, entao é como se fosse fraude
+            System.out.println("Pedido detectado como FRAUDE!");
+            orderDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getUserId(), order);
+        } else {
+            System.out.println("Pedido aprovado: "+order);
+            orderDispatcher.send("ECOMMERCE_ORDER_APPROVED", order.getUserId(), order);
+        }
+
         System.out.println("Pedido processado");
+    }
+
+    private boolean ehFraude(Order order) {
+        return order.getAmount().compareTo(new BigDecimal("4500")) >= 0;
     }
 }
