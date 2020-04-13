@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * @author Fernando de Lima
  */
-class KafkaService<T> implements Closeable {
+public class KafkaService<T> implements Closeable {
     private final ConsumerFunction parse;
     private final Class<T> type;
     private final Map<String, String> overrideProperties;
@@ -84,9 +84,7 @@ class KafkaService<T> implements Closeable {
             for (var record : records) {
                 try {
                     parse.consume(record);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
