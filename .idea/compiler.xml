@@ -8,11 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="service-fraud-detector" />
-        <module name="common-kafka" />
-        <module name="service-log" />
-        <module name="serviceusers" />
-        <module name="service-email" />
         <module name="service-new-order" />
+        <module name="service-log" />
+        <module name="service-email" />
+        <module name="serviceusers" />
+        <module name="common-kafka" />
       </profile>
     </annotationProcessing>
   </component>

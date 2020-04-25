@@ -22,12 +22,15 @@ public class NewOrderMain {
                     var orderId = UUID.randomUUID().toString();
                     // numero decimal entre 1 e 5000
                     var amount = new BigDecimal(Math.random() * 5000 + 1);
-                    var order = new Order(userId, orderId, amount);
+
+                    var email = Math.random() + "@gmail.com";
+
+                    var order = new Order(userId, orderId, amount, email);
 
                     orderDispatcher.send("ECOMMERCE_NEW_ORDER", userId, order);
 
-                    var email = "Obrigado pelo pedido! Estamos processando seu pedido!";
-                    emailDispatcher.send("ECOMMERCE_SEND_EMAIL", userId, email);
+                    var emailCode = "Obrigado pelo pedido! Estamos processando seu pedido!";
+                    emailDispatcher.send("ECOMMERCE_SEND_EMAIL", userId, emailCode);
                 }
             }
         }

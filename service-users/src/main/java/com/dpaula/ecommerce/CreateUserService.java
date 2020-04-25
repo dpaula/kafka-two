@@ -27,7 +27,12 @@ public class CreateUserService {
                 "                            email varchar(200)\n" +
                 "                        )";
 
+        try {
+
         connection.createStatement().execute(sql);
+        }catch (SQLException e){
+            //para nao dar erro, pois na segunda vez o banco ja existe
+        }
     }
 
     public static void main(String[] args) throws SQLException {
@@ -47,7 +52,7 @@ public class CreateUserService {
      * Corpo da execução da mensagem
      *
      */
-    private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException, SQLException {
+    private void parse(ConsumerRecord<String, Order> record) throws SQLException {
         System.out.println("--------------------------------------------------");
         System.out.println("Processando novo pedido, verificando por novo usuário");
         System.out.println("Valor " + record.value());
@@ -55,19 +60,19 @@ public class CreateUserService {
         final var order = record.value();
 
         if(ehUsuarioNovo(order.getEmail())){
-            inserirNovoUsuario(order.getEmail());
+            inserirNovoUsuario(order.getEmail(), order.getOrderId());
         }
 
     }
 
-    private void inserirNovoUsuario(String email) throws SQLException {
+    private void inserirNovoUsuario(String email, String uuid) throws SQLException {
 
         var sql = "insert into Users (uuid, email)" +
                 "values (?,?) ";
 
         final var preparedStatement = connection.prepareStatement(sql);
 
-        preparedStatement.setString(1, "uuid");
+        preparedStatement.setString(1, uuid);
         preparedStatement.setString(2, email);
         preparedStatement.execute();
 
@@ -76,8 +81,8 @@ public class CreateUserService {
 
     private boolean ehUsuarioNovo(String email) throws SQLException {
 
-        var sql = "select uuid from Users" +
-                "where email = ? limit 1";
+        var sql = "select uuid from Users " +
+                " where email = ? limit 1 ";
 
         final var preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, email);
