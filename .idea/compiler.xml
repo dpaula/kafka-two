@@ -10,6 +10,7 @@
         <module name="service-fraud-detector" />
         <module name="common-kafka" />
         <module name="service-log" />
+        <module name="servicehttpecommerce" />
         <module name="serviceusers" />
         <module name="service-email" />
         <module name="service-new-order" />
