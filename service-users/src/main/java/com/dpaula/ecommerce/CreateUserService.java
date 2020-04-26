@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -60,17 +61,19 @@ public class CreateUserService {
         final var order = record.value();
 
         if(ehUsuarioNovo(order.getEmail())){
-            inserirNovoUsuario(order.getEmail(), order.getOrderId());
+            inserirNovoUsuario(order.getEmail());
         }
 
     }
 
-    private void inserirNovoUsuario(String email, String uuid) throws SQLException {
+    private void inserirNovoUsuario(String email) throws SQLException {
 
         var sql = "insert into Users (uuid, email)" +
                 "values (?,?) ";
 
         final var preparedStatement = connection.prepareStatement(sql);
+
+        var uuid = UUID.randomUUID().toString();
 
         preparedStatement.setString(1, uuid);
         preparedStatement.setString(2, email);

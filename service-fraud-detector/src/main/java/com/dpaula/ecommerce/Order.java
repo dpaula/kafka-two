@@ -1,5 +1,6 @@
 package com.dpaula.ecommerce;
 
+import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
@@ -7,24 +8,18 @@ import java.math.BigDecimal;
 /**
  * @author Fernando de Lima
  */
+@Getter
 @ToString
 public class Order {
 
-    private final String userId;
     private final String orderId;
     private final BigDecimal amount;
 
-    public Order(String userId, String orderId, BigDecimal amount) {
-        this.userId = userId;
+    private final String email;
+
+    public Order(String orderId, BigDecimal amount, String email) {
         this.orderId = orderId;
         this.amount = amount;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getUserId() {
-        return userId;
+        this.email = email;
     }
 }
