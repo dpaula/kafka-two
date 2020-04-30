@@ -53,7 +53,7 @@ public class KafkaService<T> implements Closeable {
         var properties = new Properties();
 
         //setando o endereço do kafka
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9091");
         //Informando qual classe de DEserialização será usada para chave, neste caso sera string
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         //Informando qual classe de DEserialização será usada para o valor, neste caso sera string

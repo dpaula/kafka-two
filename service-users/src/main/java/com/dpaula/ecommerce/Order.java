@@ -1,6 +1,7 @@
 package com.dpaula.ecommerce;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
  * @author Fernando de Lima
  */
 @Getter
+@ToString
 public class Order {
 
     private final String orderId;

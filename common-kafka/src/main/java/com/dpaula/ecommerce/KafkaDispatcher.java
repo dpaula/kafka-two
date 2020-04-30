@@ -46,6 +46,8 @@ class KafkaDispatcher<T> implements Closeable {
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         //Informando qual classe de serialização será usada para o valor, neste caso usando uma customizada
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MeuGsonSerializer.class.getName());
+        //Garante que todas as replicas (brokers) irao ficar atualizadas com as mensagens
+        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
 
         return properties;
     }

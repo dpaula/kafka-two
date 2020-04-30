@@ -2,11 +2,11 @@ package com.dpaula.ecommerce;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Fernando de Lima
@@ -19,7 +19,8 @@ public class CreateUserService {
     CreateUserService() throws SQLException {
 
         // conexão simples ao banco
-        String url = "jdbc:sqlite:target/users_database.db";
+        String url = "jdbc:sqlite:users_database.db";
+//        String url = "jdbc:sqlite:target/users_database.db";
         this.connection = DriverManager.getConnection(url);
 
         String sql = " create table Users\n" +
@@ -30,16 +31,28 @@ public class CreateUserService {
 
         try {
 
-        connection.createStatement().execute(sql);
-        }catch (SQLException e){
+            connection.createStatement().execute(sql);
+        } catch (SQLException e) {
             //para nao dar erro, pois na segunda vez o banco ja existe
         }
     }
 
     public static void main(String[] args) throws SQLException {
 
+//        var userService = new CreateUserService();
+//
+//        try (KafkaService<Order> service = new KafkaService<>(CreateUserService.class.getSimpleName(),
+//                "ECOMMERCE_NEW_ORDER",
+//                userService::parse,
+//                Order.class,
+//                Map.of())) {
+//
+//            service.run();
+//        }
+
         var fraudService = new CreateUserService();
-        try (var service = new KafkaService<>(CreateUserService.class.getSimpleName(),
+
+        try (KafkaService<Order> service = new KafkaService<>(CreateUserService.class.getSimpleName()+"5",
                 "ECOMMERCE_NEW_ORDER",
                 fraudService::parse,
                 Order.class,
@@ -51,7 +64,6 @@ public class CreateUserService {
 
     /**
      * Corpo da execução da mensagem
-     *
      */
     private void parse(ConsumerRecord<String, Order> record) throws SQLException {
         System.out.println("--------------------------------------------------");
@@ -60,7 +72,7 @@ public class CreateUserService {
 
         final var order = record.value();
 
-        if(ehUsuarioNovo(order.getEmail())){
+        if (ehUsuarioNovo(order.getEmail())) {
             inserirNovoUsuario(order.getEmail());
         }
 
@@ -79,7 +91,7 @@ public class CreateUserService {
         preparedStatement.setString(2, email);
         preparedStatement.execute();
 
-        System.out.println("Usuário uuid adicionado, email: "+email);
+        System.out.println("Usuário uuid adicionado, email: " + email);
     }
 
     private boolean ehUsuarioNovo(String email) throws SQLException {
